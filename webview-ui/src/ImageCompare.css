@@ -1,0 +1,21 @@
+.image-overlay {
+    position: relative;
+}
+
+.image-container {
+    pointer-events: none;
+    user-select: none;
+ 
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.image-container>img {
+    width: 100%;
+    height: 100%;
+}
+
+.image-container>img:last-of-type {
+    mix-blend-mode: difference;
+}

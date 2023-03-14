@@ -1,0 +1,13 @@
+
+.zoom-in {
+    cursor: zoom-in;
+}
+
+.zoom-out {
+    cursor: zoom-out;
+}
+
+.tags {
+    display: flex;
+    flex-direction: row-reverse;
+}

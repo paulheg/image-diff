@@ -1,0 +1,87 @@
+{
+  "name": "image-diff",
+  "displayName": "Image Diff",
+  "description": "Compare and get the difference of two images",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.22.0"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "categories": [
+    "Visualization"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "menus": {
+      "editor/title": [
+        {
+          "when": "activeCustomEditorId !== 'imageDiff.diff' && resourceExtname in imageDiff.supportedExtnames",
+          "command": "imageDiff.current",
+          "group": "navigation"
+        },
+        {
+          "when": "activeCustomEditorId == 'imageDiff.diff'",
+          "command": "imageDiff.loadSecond",
+          "group": "navigation"
+        }
+      ]
+    },
+    "customEditors": [
+      {
+        "viewType": "imageDiff.diff",
+        "displayName": "Image Diff",
+        "priority": "option",
+        "selector": [
+          {
+            "filenamePattern": "*.{jpg,jpe,jpeg,png,bmp,gif,ico,webp,avif}"
+          }
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "imageDiff.current",
+        "title": "Compare the current image with another file",
+        "icon": {
+          "dark": "icons/dark/image-diff.svg",
+          "light": "icons/light/image-diff.svg"
+        }
+      },
+      {
+        "command": "imageDiff.loadSecond",
+        "title": "Load second image",
+        "icon": {
+          "dark": "icons/dark/image-add.svg",
+          "light": "icons/light/image-add.svg"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "install:all": "npm install && cd webview-ui && npm install",
+    "vscode:prepublish": "npm run compile",
+    "build:webview": "cd webview-ui && npm run build",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/node": "^18.14.6",
+    "@types/vscode": "^1.76.0",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
+    "eslint": "^8.35.0",
+    "glob": "^9.2.1",
+    "prettier": "^2.8.4",
+    "typescript": "^4.9.5",
+    "vscode-test": "^1.5.0"
+  },
+  "dependencies": {
+    "@angular/cdk": "^15.2.1",
+    "@vscode/webview-ui-toolkit": "^1.2.2"
+  }
+}

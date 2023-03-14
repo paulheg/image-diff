@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:bevel;stroke-miterlimit:1.5;">
+    <rect id="image-diff-light" serif:id="image-diff light" x="0" y="0" width="16" height="16" style="fill:none;"/>
+    <g id="image-diff-light1" serif:id="image-diff light">
+        <g transform="matrix(0.981279,0,0,1.04041,0.286128,0.128512)">
+            <path d="M6.756,3.474L1.986,3.474L1.986,11.657L6.691,11.657" style="fill:none;stroke:rgb(66,66,66);stroke-width:0.99px;"/>
+        </g>
+        <g transform="matrix(0.981279,0,0,1.04041,0.286128,0.128512)">
+            <path d="M8.983,11.657L13.736,11.657L13.736,3.474L8.924,3.474" style="fill:none;stroke:rgb(66,66,66);stroke-width:0.99px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1.1492,0,-1.27123)">
+            <path d="M8,1.976L8,14.159" style="fill:none;stroke:rgb(66,66,66);stroke-width:0.93px;"/>
+        </g>
+        <g transform="matrix(0.981279,0,0,1.04041,0.149767,-0.323295)">
+            <path d="M2.125,10.737L5.029,7.833L6.928,9.732L10.773,5.888L13.875,8.99" style="fill:none;stroke:rgb(66,66,66);stroke-width:0.99px;"/>
+        </g>
+        <g transform="matrix(3.23742,0,0,3.23742,-8.34419,-12.4235)">
+            <circle cx="4.331" cy="5.656" r="0.232" style="fill:none;stroke:rgb(66,66,66);stroke-width:0.15px;"/>
+        </g>
+    </g>
+</svg>

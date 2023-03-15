@@ -8,5 +8,7 @@
 }
 
 .center-viewer {
-    align-self: center;
+    max-width: calc(100% - 20px);
+    max-height: calc(100% - 20px);
+    margin: 20px;
 }

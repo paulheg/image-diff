@@ -115,11 +115,14 @@ export class ImageDiffEditor extends Disposable {
         const globFilter = '*.{' + SUPPORTED_EXTNAMES.map(s => s.substring(1)).join() + '}';
         const fileName = this.resource.firstImage.path.split(path.sep).pop() ?? '';
 
-        const filesWithSameName = await vscode.workspace.findFiles(path.join('*', fileName));
+        const filesWithSameName = (await vscode.workspace.findFiles(path.join('*', fileName)))
+            .filter(f => f.fsPath !== this.resource.firstImage.fsPath);
 
         const file = await openFileQuickPick((term: string) => {
-            return vscode.workspace.findFiles(term + globFilter);
-
+            return vscode.workspace.findFiles(
+                path.join('**', term + globFilter),
+                undefined,
+                10);
         } ,{
             additional: filesWithSameName,
             title: 'Select image',

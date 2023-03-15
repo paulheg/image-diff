@@ -3,8 +3,21 @@
   "displayName": "Image Diff",
   "description": "Compare and get the difference of two images",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paulheg/image-diff"
+  },
+  "bugs": {
+    "url": "https://github.com/paulheg/image-diff/issues"
+  },
+  "publisher": "Paul Hegenberg",
+  "author": {
+    "name": "Paul Hegenberg",
+    "url": "https://github.com/paulheg"
+  },
+  "icon": "icons/image-diff.png",
   "engines": {
-    "vscode": "^1.22.0"
+    "vscode": "^1.76.0"
   },
   "activationEvents": [
     "onStartupFinished"
@@ -12,7 +25,7 @@
   "categories": [
     "Visualization"
   ],
-  "main": "./out/extension.js",
+  "main": "./out/main.js",
   "contributes": {
     "menus": {
       "editor/title": [
@@ -61,11 +74,12 @@
   },
   "scripts": {
     "install:all": "npm install && cd webview-ui && npm install",
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run esbuild-base -- --minify && npm run build:webview",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "test-compile": "tsc -p ./",
     "build:webview": "cd webview-ui && npm run build",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
@@ -78,10 +92,8 @@
     "glob": "^9.2.1",
     "prettier": "^2.8.4",
     "typescript": "^4.9.5",
-    "vscode-test": "^1.5.0"
+    "vscode-test": "^1.5.0",
+    "esbuild": "0.17.11"
   },
-  "dependencies": {
-    "@angular/cdk": "^15.2.1",
-    "@vscode/webview-ui-toolkit": "^1.2.2"
-  }
+  "dependencies": {}
 }

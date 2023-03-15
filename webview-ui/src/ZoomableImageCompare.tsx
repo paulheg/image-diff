@@ -3,6 +3,7 @@ import { ImageCompare, ImageCompareProps } from "./ImageCompare";
 import './ZoomableImageCompare.css';
 
 
+const PIXELATION_THRESHOLD = 3;
 export class ZoomableImageCompare extends React.Component<ImageCompareProps, {
     zoomIn: boolean,
     zoomLevel: number,
@@ -16,6 +17,18 @@ export class ZoomableImageCompare extends React.Component<ImageCompareProps, {
         };
     }
 
+    zoomIn() {
+        this.setState({
+            zoomLevel: this.state.zoomLevel * 2,
+        })
+    }
+
+    zoomOut() {
+        this.setState({
+            zoomLevel: this.state.zoomLevel * 0.5,
+        })
+    }
+
     componentDidMount(): void {
 
         const container = document.getElementById('container');
@@ -23,15 +36,9 @@ export class ZoomableImageCompare extends React.Component<ImageCompareProps, {
         container?.addEventListener('click', (v: MouseEvent) => {
 
             if (v.ctrlKey) {
-                // zoom out
-                this.setState({
-                    zoomLevel: this.state.zoomLevel * 0.5,
-                })
+                this.zoomOut();
             } else {
-                // zoom in
-                this.setState({
-                    zoomLevel: this.state.zoomLevel * 2,
-                })
+                this.zoomIn();
             }
 
         })
@@ -39,8 +46,6 @@ export class ZoomableImageCompare extends React.Component<ImageCompareProps, {
         window.addEventListener('keydown', (v: KeyboardEvent) => {
 
             if (v.ctrlKey) {
-                console.log('ctrl down');
-                
                 this.setState({
                     zoomIn: false
                 });
@@ -49,8 +54,6 @@ export class ZoomableImageCompare extends React.Component<ImageCompareProps, {
         
         window.addEventListener('keyup', (v: KeyboardEvent) => {
             if (!v.ctrlKey) {
-                console.log('ctrl up');
-
                 this.setState({
                     zoomIn: true,
                 });
@@ -62,7 +65,10 @@ export class ZoomableImageCompare extends React.Component<ImageCompareProps, {
         return (
             <div>
                 <div id='container' 
-                    className={this.state.zoomIn ? 'zoom-in' : 'zoom-out'}
+                    className={[
+                        (this.state.zoomIn ? 'zoom-in' : 'zoom-out'),
+                        (this.state.zoomLevel >= PIXELATION_THRESHOLD ? 'pixelated' : '')
+                    ].join(' ')}
                     style={
                         {zoom: this.state.zoomLevel}
                     }>

@@ -10,6 +10,7 @@ out/test/**
 
 # Ignore source code
 src/**
+node_modules/**
 
 # Ignore all webview-ui files except the build directory
 webview-ui/src/**
@@ -20,6 +21,8 @@ webview-ui/README.md
 webview-ui/package.json
 webview-ui/package-lock.json
 webview-ui/node_modules/**
+webview-ui/build/*.*
+webview-ui/build/static/js/*.chunk.js
 
 # Ignore Misc
 .yarnrc
@@ -30,3 +33,6 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
+docs/
+.prettierignore
+

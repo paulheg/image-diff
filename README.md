@@ -17,14 +17,3 @@ Now **Image Diff** comes into play:
 ![Verwendung von Image Diff](docs/images/image-diff-usage.gif)
 
 You are able to zoom to detect small differences.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of image-diff
-
-- basic zooming
-- basic image comparing

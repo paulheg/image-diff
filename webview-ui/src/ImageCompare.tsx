@@ -1,6 +1,5 @@
 import React from 'react';
 import './ImageCompare.css';
-import { VSCodeTag } from '@vscode/webview-ui-toolkit/react';
 
 export interface ImageCompareProps {
     firstImage: string

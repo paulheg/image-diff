@@ -33,8 +33,6 @@ export default class App extends React.Component<AppProps, AppState> {
         command: string,
         arguments: any,
       }>) =>  {
-
-      console.log(event);
   
       switch (event.data.command) {
         case 'LOAD_FIRST_IMAGE':
@@ -60,15 +58,13 @@ export default class App extends React.Component<AppProps, AppState> {
 
   render(): React.ReactNode {
     return (
-      <main>
-        <div className='container'>
-          <div className='center-viewer'>
-            <ZoomableImageCompare 
-              firstImage={this.state.firstImage}
-              secondImage={this.state.secondImage}/>
-          </div>
+      <div className='container'>
+        <div className='center-viewer'>
+          <ZoomableImageCompare 
+            firstImage={this.state.firstImage}
+            secondImage={this.state.secondImage}/>
         </div>
-      </main>
+      </div>
     );
   }
 }

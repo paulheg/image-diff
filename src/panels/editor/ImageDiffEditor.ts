@@ -6,6 +6,9 @@ import { getNonce } from '../../utilities/getNonce';
 import { getUri } from '../../utilities/getUri';
 import { Command, Commands } from './commands';
 import { openFileQuickPick } from '../../utilities/fileQuickPick';
+import { Uri } from 'vscode';
+import { extensions } from 'vscode';
+import { getFilename, getFolder } from '../../utilities/uri';
 
 export const SUPPORTED_EXTNAMES: string[] = ['.jpg','.jpe','.jpeg','.png','.bmp','.gif','.ico','.webp','.avif'];
 
@@ -60,7 +63,7 @@ export class ImageDiffEditor extends Disposable {
     constructor(
         private resource: ImageDiffDocument,
         private _webviewPanel: vscode.WebviewPanel,
-        private _context: vscode.ExtensionContext
+        private _context: vscode.ExtensionContext,
     ) {
         super();
 
@@ -107,14 +110,14 @@ export class ImageDiffEditor extends Disposable {
         const file = await this.openImageDialog();
         if (file !== undefined) {
             this.resource.updateSecondImage(file);
+            this.updateWebviewOptions();
         }
     }
 
     private async openImageDialog(): Promise<vscode.Uri | undefined> {
 
         const globFilter = '*.{' + SUPPORTED_EXTNAMES.map(s => s.substring(1)).join() + '}';
-        const fileName = this.resource.firstImage.path.split(path.sep).pop() ?? '';
-
+        const fileName =  getFilename(this.resource.firstImage); 
         const filesWithSameName = (await vscode.workspace.findFiles(path.join('*', fileName)))
             .filter(f => f.fsPath !== this.resource.firstImage.fsPath);
 
@@ -138,11 +141,24 @@ export class ImageDiffEditor extends Disposable {
         });
     }
 
-    render(): void {
+    private updateWebviewOptions() {
+        const roots: Uri[] = [];
+        roots.push(this._context.extensionUri);
+        roots.push(getFolder(this.resource.firstImage));
+
+        if (this.resource.secondImage !== undefined) {
+            roots.push(getFolder(this.resource.secondImage));
+        }
 
         this._webviewPanel.webview.options = {
             enableScripts: true,
+            localResourceRoots: roots,
         };
+    }
+
+    // initial rendering of the webview
+    render(): void {
+        this.updateWebviewOptions();
         this._webviewPanel.webview.html = this.getHtml();
     }
 

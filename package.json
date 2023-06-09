@@ -2,7 +2,7 @@
   "name": "image-diff",
   "displayName": "Image Diff",
   "description": "Compare and get the difference of two images",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/paulheg/image-diff"

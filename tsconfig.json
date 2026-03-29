@@ -2,6 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2022",
+    "moduleResolution": "bundler",
+    "types": ["node"],
     "outDir": "out",
     "lib": ["ES2022", "dom"],
     "sourceMap": true,

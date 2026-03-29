@@ -11,6 +11,8 @@ export class QuickFilePickOptions {
 
 }
 
+// add subcategories
+
 export async function openFileQuickPick(getFiles: (searchTerm: string) => Thenable<vscode.Uri[]>, options?: QuickFilePickOptions): Promise<vscode.Uri | undefined> {
     const disposables: vscode.Disposable[] = [];
     try {
@@ -34,10 +36,14 @@ export async function openFileQuickPick(getFiles: (searchTerm: string) => Thenab
                 pick.busy = false;
             };
 
+            // regsiter event when the search input changes
+            // in this case reload / search the files
             disposables.push(pick.onDidChangeValue(async (search: string) => {
                 loadFiles(search);
             }));
 
+            // register an event when the selection changed
+            // in this case resolve the image
             disposables.push(pick.onDidChangeSelection((items : readonly FileItem[]) => {
                 if (items.length > 0) {
                     const item = items[0];

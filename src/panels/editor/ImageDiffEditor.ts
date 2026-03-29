@@ -1,16 +1,16 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
 import { ImageDiffDocument } from './ImageDiffDocument';
 import { Disposable } from '../../utilities/disposable';
 import { getNonce } from '../../utilities/getNonce';
 import { getUri } from '../../utilities/getUri';
 import { Command, Commands } from './commands';
-import { openFileQuickPick } from '../../utilities/fileQuickPick';
 import { Uri } from 'vscode';
-import { extensions } from 'vscode';
-import { getFilename, getFolder } from '../../utilities/uri';
+import { getFolder } from '../../utilities/uri';
+import { openImageQuickPick } from './ImageQuickPick';
 
-export const SUPPORTED_EXTNAMES: string[] = ['.jpg','.jpe','.jpeg','.png','.bmp','.gif','.ico','.webp','.avif'];
+export const SUPPORTED_EXTNAMES: string[] = ['.jpg', '.jpe', '.jpeg', '.png', '.bmp', '.gif', '.ico', '.webp', '.avif'];
+// extensions without the dot (.ext)
+export const GLOB_FILTER = '*.{' + SUPPORTED_EXTNAMES.map(s => s.substring(1)).join() + '}';
 
 export function registerImageDiffSupport(context: vscode.ExtensionContext): vscode.Disposable {
 
@@ -19,13 +19,13 @@ export function registerImageDiffSupport(context: vscode.ExtensionContext): vsco
 
     vscode.commands.registerCommand('imageDiff.loadSecond', () => {
 
-		const documentUri = (vscode.window.tabGroups.activeTabGroup.activeTab?.input as any).uri as vscode.Uri;
+        const documentUri = (vscode.window.tabGroups.activeTabGroup.activeTab?.input as any).uri as vscode.Uri;
         const editor = ImageDiffEditorProvider.editors.get(documentUri.fsPath);
 
         if (editor === undefined) {
             vscode.window.showErrorMessage('Editor not found, please open an issue on github.com/paulheg/image-diff');
         }
-        
+
         editor?.openSecondImage();
     });
 
@@ -33,32 +33,33 @@ export function registerImageDiffSupport(context: vscode.ExtensionContext): vsco
 
         const documentUri = (vscode.window.tabGroups.activeTabGroup.activeTab?.input as any).uri as vscode.Uri;
 
-		if (documentUri === undefined) {
-			vscode.window.showErrorMessage('No active file');
-			return;
-		}
-        
+        if (documentUri === undefined) {
+            vscode.window.showErrorMessage('No active file');
+            return;
+        }
+
         vscode.commands.executeCommand(
-            'vscode.openWith', 
-            documentUri, 
+            'vscode.openWith',
+            documentUri,
             ImageDiffEditorProvider.viewType
         );
-	});
+    });
 
-	const provider = new ImageDiffEditorProvider(context);
+    const provider = new ImageDiffEditorProvider(context);
 
-	return vscode.window.registerCustomEditorProvider(
-        ImageDiffEditorProvider.viewType, 
-        provider, 
+    return vscode.window.registerCustomEditorProvider(
+        ImageDiffEditorProvider.viewType,
+        provider,
         {
             webviewOptions: {
                 retainContextWhenHidden: false,
-		    },
+            },
             supportsMultipleEditorsPerDocument: false,
         });
 }
 
 export class ImageDiffEditor extends Disposable {
+
 
     constructor(
         private resource: ImageDiffDocument,
@@ -78,12 +79,12 @@ export class ImageDiffEditor extends Disposable {
 
         this._register(_webviewPanel.webview.onDidReceiveMessage(async (command: Command) => {
             switch (command.command) {
-                case Commands.openSecond:    
+                case Commands.openSecond:
                     this.openSecondImage();
                     break;
                 case Commands.webviewReady:
                     this.postMessage(
-                        Commands.loadFirst, 
+                        Commands.loadFirst,
                         _webviewPanel.webview.asWebviewUri(resource.firstImage).toString());
 
                     if (resource.secondImage !== undefined) {
@@ -107,31 +108,11 @@ export class ImageDiffEditor extends Disposable {
     }
 
     public async openSecondImage(): Promise<void> {
-        const file = await this.openImageDialog();
+        const file = await openImageQuickPick(this.resource.firstImage);
         if (file !== undefined) {
             this.resource.updateSecondImage(file);
             this.updateWebviewOptions();
         }
-    }
-
-    private async openImageDialog(): Promise<vscode.Uri | undefined> {
-
-        const globFilter = '*.{' + SUPPORTED_EXTNAMES.map(s => s.substring(1)).join() + '}';
-        const fileName =  getFilename(this.resource.firstImage); 
-        const filesWithSameName = (await vscode.workspace.findFiles(path.join('*', fileName)))
-            .filter(f => f.fsPath !== this.resource.firstImage.fsPath);
-
-        const file = await openFileQuickPick((term: string) => {
-            return vscode.workspace.findFiles(
-                path.join('**', term + globFilter),
-                undefined,
-                10);
-        } ,{
-            additional: filesWithSameName,
-            title: 'Select image',
-        });
-
-        return file;
     }
 
     private postMessage(command: Commands, args: any): void {
@@ -141,6 +122,7 @@ export class ImageDiffEditor extends Disposable {
         });
     }
 
+    // this is mostly used to update the localResourceRoots as you cant update them on their own.
     private updateWebviewOptions() {
         const roots: Uri[] = [];
         roots.push(this._context.extensionUri);
@@ -164,16 +146,16 @@ export class ImageDiffEditor extends Disposable {
 
     getHtml(): string {
         const webview = this._webviewPanel.webview;
-        
+
         const cspSource = webview.cspSource;
         const nonce = getNonce();
         const extensionUri = this._context.extensionUri;
 
         // The CSS file from the React build output
         const stylesUri = getUri(webview, extensionUri, ["webview-ui", "build", "static", "css", "main.css"]);
-        
+
         // The JS files from the React build output
-        const scriptUri = getUri(webview, extensionUri, ["webview-ui", "build","static", "js", "main.js"]);
+        const scriptUri = getUri(webview, extensionUri, ["webview-ui", "build", "static", "js", "main.js"]);
 
         return `<!DOCTYPE html>
         <html lang="en">
@@ -194,12 +176,12 @@ export class ImageDiffEditor extends Disposable {
         </body>
         </html>`;
     }
-    
+
 }
 
 
 export class ImageDiffEditorProvider implements vscode.CustomReadonlyEditorProvider<ImageDiffDocument> {
-    
+
     public static viewType = "imageDiff.diff";
 
     public static editors: Map<string, ImageDiffEditor> = new Map();
@@ -210,26 +192,26 @@ export class ImageDiffEditorProvider implements vscode.CustomReadonlyEditorProvi
 
     constructor(
         private _context: vscode.ExtensionContext,
-    ) {}
+    ) { }
 
     openCustomDocument(
-        uri: vscode.Uri, 
-        openContext: vscode.CustomDocumentOpenContext, 
+        uri: vscode.Uri,
+        openContext: vscode.CustomDocumentOpenContext,
         token: vscode.CancellationToken): ImageDiffDocument | Thenable<ImageDiffDocument> {
 
         return new ImageDiffDocument(uri);
     }
-    
+
     resolveCustomEditor(
-        document: ImageDiffDocument, 
-        webviewPanel: vscode.WebviewPanel, 
+        document: ImageDiffDocument,
+        webviewPanel: vscode.WebviewPanel,
         token: vscode.CancellationToken): void | Thenable<void> {
 
         if (!ImageDiffEditorProvider.editors.has(document.uri.fsPath)) {
-            ImageDiffEditorProvider.editors.set(document.uri.fsPath, new ImageDiffEditor(document, webviewPanel, this._context))
+            ImageDiffEditorProvider.editors.set(document.uri.fsPath, new ImageDiffEditor(document, webviewPanel, this._context));
         }
     }
 
-    
+
 
 }
